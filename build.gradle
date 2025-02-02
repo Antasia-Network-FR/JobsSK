@@ -1,0 +1,62 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java'
+}
+
+group = "io.github.antasianetwork"
+version = "1.0"
+
+compileJava.options.encoding = 'UTF-8'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots' }
+    maven { url 'https://repo.skriptlang.org/releases' }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://maven.enginehub.org/repo/' }
+}
+
+dependencies {
+    implementation 'org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT'
+    implementation ('com.github.SkriptLang:Skript:2.10.0') {
+        transitive = false
+    }
+    implementation 'com.github.Zrips:Jobs:v5.2.2.3'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+    }
+}
+
+processResources {
+    filter ReplaceTokens, tokens: [
+            'version': version
+    ]
+}
+
+tasks.register('nightlyResources', ProcessResources) {
+    from 'src/main/resources', {
+        include '**'
+        filter ReplaceTokens, tokens: [
+                'version': project.property('version') + '-nightly-' + 'git rev-parse --short HEAD'.execute().text.trim()
+        ]
+    }
+    into 'build/resources/main'
+}
+
+tasks.register('nightlyBuild', Jar) {
+    dependsOn nightlyResources
+    from sourceSets.main.output
+    archiveFileName = 'jobssk-nightly.jar'
+}

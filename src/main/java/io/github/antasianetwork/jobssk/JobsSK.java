@@ -9,7 +9,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 
 public class JobsSK extends JavaPlugin {
-    private static SkriptAddon addon;
     private static JobsSK instance;
 
     @Override
@@ -31,17 +30,14 @@ public class JobsSK extends JavaPlugin {
             return;
         }
 
-        addon = Skript.registerAddon(this);
+        SkriptAddon addon = Skript.registerAddon(this);
         try {
             getLogger().info("Loading skript syntaxes...");
             addon.loadClasses("io.github.antasianetwork.jobssk");
         } catch (IOException e) {
             getLogger().severe("An error occured when loading syntaxes :\n" + e);
             getServer().getPluginManager().disablePlugin(this);
-            return;
         }
-
-        getLogger().info("Liste des événements enregistrés dans Skript :");
     }
 
     public static JobsSK getInstance() {

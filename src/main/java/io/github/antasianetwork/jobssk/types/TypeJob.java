@@ -11,6 +11,7 @@ import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.Job;
 import io.github.antasianetwork.jobssk.JobsSK;
 import org.jetbrains.annotations.Nullable;
+import org.skriptlang.skript.lang.converter.Converters;
 
 import java.io.StreamCorruptedException;
 
@@ -21,7 +22,6 @@ public class TypeJob {
                 .name("Job")
                 .description("Represents Jobs from Jobs Reborn.")
                 .examples("on player job join:", "\tbroadcast \"%player% joined the %name of job-event% !\"")
-                .defaultExpression(new EventValueExpression<>(Job.class))
                 .parser(new Parser<>() {
                     @Override
                     public String toString(Job job, int flags) {
@@ -62,5 +62,7 @@ public class TypeJob {
                     }
                 })
         );
+
+        Converters.registerConverter(String.class, Job.class, Jobs::getJob);
     }
 }

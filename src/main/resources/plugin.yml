@@ -1,7 +1,7 @@
 name: jobssk
 main: io.github.antasianetwork.jobssk.JobsSK
 api-version: 1.13
-version: 1.0.1
+version: 1.0.2
 authors: [tgbhy]
 description: Allows using Jobs in Skript !
 website: https://github.com/Antasia-Network-FR/JobsSK

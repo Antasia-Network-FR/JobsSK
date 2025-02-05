@@ -5,10 +5,8 @@ import ch.njol.skript.lang.Literal;
 import ch.njol.skript.lang.SkriptEvent;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
-import ch.njol.util.NullableChecker;
 import com.gamingmesh.jobs.api.JobsJoinEvent;
 import com.gamingmesh.jobs.container.Job;
-import io.github.antasianetwork.jobssk.JobsSK;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +15,7 @@ import org.skriptlang.skript.lang.converter.Converter;
 public class EvtJobJoin extends SkriptEvent {
 
     static {
-        Skript.registerEvent("Player join job", EvtJobJoin.class, JobsJoinEvent.class, "player join job [%-job%]");
+        Skript.registerEvent("Player join job", EvtJobJoin.class, JobsJoinEvent.class, "player join [(a|the)] job [[(with name|named) ]%-string%]");
         EventValues.registerEventValue(JobsJoinEvent.class, Job.class, new Converter<>() {
             @Nullable
             @Override
@@ -34,27 +32,24 @@ public class EvtJobJoin extends SkriptEvent {
         });
     }
 
-    Literal<Job> job;
+    private Literal<Job> job;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Literal<?>[] args, int matchedPattern, SkriptParser.ParseResult parseResult) {
-        job = (Literal<Job>) args[0];
-        JobsSK.getInstance().getLogger().info("Init JobJoin.java");
+        job = args[0] == null ? null : (Literal<Job>) args[0].getConvertedExpression(Job.class);
         return true;
     }
 
     @Override
     public boolean check(Event event) {
-        JobsSK.getInstance().getLogger().info("Check JobJoin.java");
-        if (job != null) {
-            return job.check(event, (NullableChecker<Job>) o -> o == null || o.getId() == job.getAll()[0].getId());
-        }
+        if (job != null)
+            return job.check(event, jobC -> jobC.equals(((JobsJoinEvent) event).getJob()));
         return true;
     }
 
     @Override
     public String toString(@Nullable Event event, boolean debug) {
-        return "Job " + job.toString(event, debug);
+        return "Player join job " + job.toString(event, debug);
     }
 }

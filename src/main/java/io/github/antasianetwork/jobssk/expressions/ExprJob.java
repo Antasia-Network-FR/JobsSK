@@ -16,7 +16,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 @Name("Job from ID/Name")
-@Description("Returns the Job from his ID or his Name.")
+@Description("Returns the Job from its ID or Name.")
 @Examples({"job named \"miner\"", "the job \"farmer\""})
 @Since("1.0.0")
 public class ExprJob extends SimpleExpression<Job> {
